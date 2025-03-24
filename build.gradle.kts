@@ -5,7 +5,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {url = uri("https://repo.repsy.io/mvn/reapermaga/library") }
+    maven { url = uri("https://repo.repsy.io/mvn/reapermaga/library") }
 }
 
 dependencies {
@@ -17,7 +17,6 @@ dependencies {
 
     implementation("com.github.reapermaga.library:common:0.1.13")
     implementation("net.lingala.zip4j:zip4j:2.11.5")
-
 }
 
 testing {
