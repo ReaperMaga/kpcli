@@ -26,19 +26,8 @@ jobs:
       - name: Create kpcli.bat
         run: |
           echo @echo off > build/libs/kpcli.bat
-          echo setlocal enabledelayedexpansion >> build/libs/kpcli.bat
-          echo set "SEARCH_DIR=build/libs" >> build/libs/kpcli.bat
-          echo for /r "%%SEARCH_DIR%%" %%f in (*.jar) do ( >> build/libs/kpcli.bat
-          echo     set "JAR_FILE=%%f" >> build/libs/kpcli.bat
-          echo     goto :run_kpcli >> build/libs/kpcli.bat
-          echo ) >> build/libs/kpcli.bat
-          echo echo No .jar file found in the directory. >> build/libs/kpcli.bat
-          echo goto :end >> build/libs/kpcli.bat
-          echo :run_kpcli >> build/libs/kpcli.bat
-          echo echo Running !JAR_FILE! >> build/libs/kpcli.bat
-          echo java -jar "!JAR_FILE!" >> build/libs/kpcli.bat
-          echo :end >> build/libs/kpcli.bat
-          echo endlocal >> build/libs/kpcli.bat
+          echo cd /d "%~dp0" >> build/libs/kpcli.bat
+          echo java -jar kpcli-all.jar >> build/libs/kpcli.bat
       - name: Create release
         if: ${{ success() }}
         uses: softprops/action-gh-release@v2
