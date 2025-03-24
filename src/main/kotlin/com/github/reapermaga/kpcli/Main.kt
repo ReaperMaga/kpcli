@@ -56,7 +56,7 @@ fun main() {
 fun success(message: String) {
    val greenMessage = AttributedString(
       message,
-      AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN)
+      AttributedStyle.BOLD.foreground(AttributedStyle.GREEN)
    );
    terminal.writer().println(greenMessage.toAnsi(terminal))
 }
