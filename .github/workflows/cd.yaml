@@ -15,12 +15,15 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Build the GPLv2 plantuml
+        run: |
+          VERSION=$(grep 'version=' gradle.properties | cut -d' ' -f 3)
+          echo VERSION $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Native compile
-        run: ./gradlew nativeCompile
+        shell: bash
+        run: |
+          ./gradle nativeCompile
       - name: Archive Release
         uses: thedoctor0/zip-release@0.7.5
         with:
