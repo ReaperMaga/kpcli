@@ -37,7 +37,7 @@ class GradleProcessor : Processor<GradleWizardResult> {
             } else if (it == Dependencies.REAPERMAGA_COMMON_LIBRARY) {
                 repositores.add("https://repo.repsy.io/mvn/reapermaga/library")
                 dependencies.add("com.github.reapermaga.library:common:+")
-            } else if(it == Dependencies.SHADOWJAR) {
+            } else if (it == Dependencies.SHADOWJAR) {
                 plugins["com.gradleup.shadow"] = "9.0.0-beta2"
             }
         }

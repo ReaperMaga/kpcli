@@ -1,9 +1,9 @@
 package com.github.reapermaga.kpcli
 
-import org.jline.utils.AttributedString
-import org.jline.utils.AttributedStyle
 import org.jline.consoleui.prompt.ConsolePrompt
 import org.jline.terminal.Terminal
+import org.jline.utils.AttributedString
+import org.jline.utils.AttributedStyle
 import org.jline.utils.OSUtils
 
 private val PREFIX =
@@ -33,7 +33,6 @@ fun printError(message: String) {
         )
     terminal.writer().println("${PREFIX.toAnsi(terminal)} ${errMessage.toAnsi(terminal)}")
 }
-
 
 fun produceJLineUIConfig(terminal: Terminal): ConsolePrompt.UiConfig =
     when {

@@ -8,6 +8,7 @@ import kotlin.reflect.KClass
 val processors: Array<Processor<out WizardResult>> =
     arrayOf(
         GradleProcessor(),
+        BaseProcessor(),
     )
 
 interface Processor<T : WizardResult> {

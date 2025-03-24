@@ -1,16 +1,19 @@
 package com.github.reapermaga.kpcli.wizard
 
 import com.github.reapermaga.kpcli.processor.Dependencies
+import com.github.reapermaga.kpcli.processor.GithubWorkflows
 import org.jline.consoleui.prompt.CheckboxResult
 import org.jline.consoleui.prompt.ConsolePrompt
 
 class BaseWizardResult(
     override val dependencies: Set<String>,
+    val githubWorkflows: Set<String>,
 ) : GradleWizardResult
 
 class BaseWizard : Wizard<BaseWizardResult> {
     override fun prompt(prompt: ConsolePrompt): BaseWizardResult {
         val builder = prompt.promptBuilder
+        // Dependencies
         builder
             .createCheckboxPrompt()
             .name("dependencies")
@@ -28,8 +31,24 @@ class BaseWizard : Wizard<BaseWizardResult> {
             .text("ReaperMaga's Common Library")
             .add()
             .addPrompt()
+
+        // CI/CD
+        builder
+            .createCheckboxPrompt()
+            .name("workflows")
+            .message("Do you want any github workflows to be included?:")
+            .newItem()
+            .name(GithubWorkflows.CI)
+            .text("Continuous integration")
+            .add()
+            .newItem()
+            .name(GithubWorkflows.CI_KTLINT)
+            .text("Continuous integration with Ktlint")
+            .add()
+            .addPrompt()
         val result = prompt.prompt(builder.build())
         val chosenDeps = (result["dependencies"] as CheckboxResult).selectedIds
-        return BaseWizardResult(chosenDeps)
+        val chosenWorkflows = (result["workflows"] as CheckboxResult).selectedIds
+        return BaseWizardResult(chosenDeps, chosenWorkflows)
     }
 }
