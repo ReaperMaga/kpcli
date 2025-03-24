@@ -1,0 +1,30 @@
+name: GraalVM Native Image builds
+on: [push]
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+      - name: Native compile
+        run: gradlew nativeCompile
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: "kpcli-${{ matrix.platform }}-${{ env.VERSION }}.zip"
+          directory: build/native/nativeCompile/
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: kpcli-${{ matrix.platform }}-${{ env.VERSION }}.zip
+          path: build/native/nativeCompile/kpcli-${{ matrix.platform }}-${{ env.VERSION }}.zip

@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("org.graalvm.buildtools.native") version "0.10.6"
 }
 
 repositories {
@@ -32,6 +33,6 @@ testing {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
