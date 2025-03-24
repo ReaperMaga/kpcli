@@ -6,17 +6,11 @@ import com.github.reapermaga.kpcli.wizard.GradleWizardResult
 import java.io.File
 import kotlin.reflect.KClass
 
-data class SupportedDependency(
-    val displayName: String,
-    val notation: String,
-    val repository: String? = null,
-)
-
-val supportedDependencies =
-    mapOf(
-        "ktlint" to SupportedDependency("Ktlint", ""),
-        "ktlint" to SupportedDependency("Ktlint", ""),
-    )
+object Dependencies {
+    const val KTLINT = "ktlint"
+    const val SHADOWJAR = "shadowjar"
+    const val REAPERMAGA_COMMON_LIBRARY = "reapermaga-common-library"
+}
 
 class GradleProcessor : Processor<GradleWizardResult> {
     override val wizardResultType: KClass<GradleWizardResult> = GradleWizardResult::class
@@ -38,11 +32,13 @@ class GradleProcessor : Processor<GradleWizardResult> {
         val repositores: MutableSet<String> = mutableSetOf()
         val dependencies: MutableSet<String> = mutableSetOf()
         wizardResult.dependencies.forEach {
-            if (it == "ktlint") {
+            if (it == Dependencies.KTLINT) {
                 plugins["org.jlleitschuh.gradle.ktlint"] = "12.2.0"
-            } else if (it == "reapermaga-common-library") {
+            } else if (it == Dependencies.REAPERMAGA_COMMON_LIBRARY) {
                 repositores.add("https://repo.repsy.io/mvn/reapermaga/library")
                 dependencies.add("com.github.reapermaga.library:common:+")
+            } else if(it == Dependencies.SHADOWJAR) {
+                plugins["com.gradleup.shadow"] = "9.0.0-beta2"
             }
         }
         val pluginsComment = "// Plugins"

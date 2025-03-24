@@ -1,16 +1,17 @@
 package com.github.reapermaga.kpcli
 
 import com.github.reapermaga.kpcli.processor.processors
-import com.github.reapermaga.kpcli.util.produceJLineUIConfig
 import com.github.reapermaga.kpcli.wizard.WizardResult
 import org.jline.consoleui.prompt.ConsolePrompt
 import org.jline.consoleui.prompt.InputResult
 import org.jline.consoleui.prompt.ListResult
+import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
+import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 
-val terminal = TerminalBuilder.builder().build()
-val reader = LineReaderBuilder.builder().terminal(terminal).build()
+val terminal: Terminal = TerminalBuilder.builder().build()
+val reader: LineReader = LineReaderBuilder.builder().terminal(terminal).build()
 
 fun main() {
     val prompt = ConsolePrompt(reader, terminal, produceJLineUIConfig(terminal))
