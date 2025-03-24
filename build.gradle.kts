@@ -2,6 +2,11 @@ plugins {
     kotlin("jvm") version "2.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
     id("org.graalvm.buildtools.native") version "0.10.6"
+    application
+}
+
+application {
+    mainClass = "com.github.reapermaga.kpcli.MainKt"
 }
 
 repositories {

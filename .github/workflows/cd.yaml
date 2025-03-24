@@ -20,6 +20,8 @@ jobs:
           VERSION=$(grep 'version=' gradle.properties | cut -d' ' -f 3)
           echo VERSION $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
       - name: Native compile
         shell: bash
         run: |
