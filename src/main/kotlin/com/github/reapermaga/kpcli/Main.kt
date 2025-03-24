@@ -32,7 +32,7 @@ fun main() {
         .name("name")
         .message("What will your project be called?:")
         .addPrompt()
-    val result = prompt.prompt(builder.build())
+    val result = prompt.prompt(mutableListOf(getHeader(Template::class.java.classLoader)), builder.build())
     val template =
         result
             .firstNotNullOfOrNull {

@@ -2,7 +2,6 @@ package com.github.reapermaga.kpcli.processor
 
 import com.github.reapermaga.kpcli.Template
 import com.github.reapermaga.kpcli.wizard.BaseWizardResult
-import com.github.reapermaga.library.common.getFileFromResources
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -29,17 +28,22 @@ class BaseProcessor : Processor<BaseWizardResult> {
         File(workflowsDirectoryPath).apply {
             mkdirs()
         }
-        val templateDirectory = "workflow_templates/"
+        val templateDirectory = ""
         wizardResult.githubWorkflows.forEach {
             if (it == GithubWorkflows.CI) {
-                getFileFromResources(templateDirectory.plus("ci.yaml")).apply {
-                    copyTo(File(workflowsDirectoryPath.plus("ci.yaml")))
+                getContentFromWorkflowsDirectory("ci.yaml").apply {
+                    File(workflowsDirectoryPath.plus("ci.yaml"))
                 }
             } else if (it == GithubWorkflows.CI_KTLINT) {
-                getFileFromResources(templateDirectory.plus("ci_ktlint.yaml")).apply {
-                    copyTo(File(workflowsDirectoryPath.plus("ci_ktlint.yaml")))
+                getContentFromWorkflowsDirectory("ci_ktlint.yaml").apply {
+                    File(workflowsDirectoryPath.plus("ci_ktlint.yaml"))
                 }
             }
         }
     }
+
+    private fun getContentFromWorkflowsDirectory(name: String): String =
+        this::class.java.classLoader
+            .getResource("workflow_templates/$name")
+            ?.readText() ?: error("File $name not found")
 }

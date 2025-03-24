@@ -12,6 +12,11 @@ private val PREFIX =
         AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN),
     )
 
+fun getHeader(loader: ClassLoader): AttributedString {
+    val text = loader.getResource("HEADER")?.readText()
+    return AttributedString(text)
+}
+
 fun printSpace() {
     println("")
 }
