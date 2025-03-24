@@ -1,34 +1,51 @@
-name: GraalVM Native Image builds
-on: [push]
+name: CI
+
+on:
+  pull_request:
+
 jobs:
   build:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: graalvm/setup-graalvm@v1
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-      - name: Native compile
-        shell: bash
+      - name: Lint
+        run: ./gradlew ktlintCheck
+      - name: Build with Gradle Wrapper
+        run: ./gradlew shadowJar
+      - name: Create kpcli.bat
         run: |
-          ./gradlew nativeCompile
-      - name: Archive Release
-        uses: thedoctor0/zip-release@0.7.5
+          echo @echo off > build/libs/kpcli.bat
+          echo setlocal enabledelayedexpansion >> build/libs/kpcli.bat
+          echo set "SEARCH_DIR=build/libs" >> build/libs/kpcli.bat
+          echo for /r "%%SEARCH_DIR%%" %%f in (*.jar) do ( >> build/libs/kpcli.bat
+          echo     set "JAR_FILE=%%f" >> build/libs/kpcli.bat
+          echo     goto :run_kpcli >> build/libs/kpcli.bat
+          echo ) >> build/libs/kpcli.bat
+          echo echo No .jar file found in the directory. >> build/libs/kpcli.bat
+          echo goto :end >> build/libs/kpcli.bat
+          echo :run_kpcli >> build/libs/kpcli.bat
+          echo echo Running !JAR_FILE! >> build/libs/kpcli.bat
+          echo java -jar "!JAR_FILE!" >> build/libs/kpcli.bat
+          echo :end >> build/libs/kpcli.bat
+          echo endlocal >> build/libs/kpcli.bat
+      - name: Create release
+        if: ${{ success() }}
+        uses: softprops/action-gh-release@v2
         with:
-          type: 'zip'
-          filename: "kpcli-${{ matrix.platform }}.zip"
-          directory: build/native/nativeCompile/
-      - name: Upload binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: kpcli-${{ matrix.platform }}.zip
-          path: build/native/nativeCompile/kpcli-${{ matrix.platform }}.zip
+          draft: false
+          prerelease: false
+          files: |
+            build/libs/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
