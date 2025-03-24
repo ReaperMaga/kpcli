@@ -15,11 +15,6 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Extract version
-        run: |
-          VERSION=$(grep 'version=' gradle.properties | cut -d' ' -f 3)
-          echo VERSION $VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Native compile
@@ -30,10 +25,10 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
-          filename: "kpcli-${{ matrix.platform }}-${{ env.VERSION }}.zip"
+          filename: "kpcli-${{ matrix.platform }}.zip"
           directory: build/native/nativeCompile/
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: kpcli-${{ matrix.platform }}-${{ env.VERSION }}.zip
-          path: build/native/nativeCompile/kpcli-${{ matrix.platform }}-${{ env.VERSION }}.zip
+          name: kpcli-${{ matrix.platform }}.zip
+          path: build/native/nativeCompile/kpcli-${{ matrix.platform }}.zip
