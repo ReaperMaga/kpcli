@@ -1,6 +1,7 @@
 package com.github.reapermaga.kpcli.processor
 
 import com.github.reapermaga.kpcli.Template
+import com.github.reapermaga.kpcli.printError
 import com.github.reapermaga.kpcli.wizard.GradleWizardResult
 import java.io.File
 import kotlin.reflect.KClass
@@ -26,7 +27,11 @@ class GradleProcessor : Processor<GradleWizardResult> {
         wizardResult: GradleWizardResult,
     ) {
         val buildGradleKtsFile =
-            folder.listFiles()?.firstOrNull { it.name == "build.gradle.kts" } ?: error("Couldn't find build.gradle.kts")
+            folder.listFiles()?.firstOrNull { it.name == "build.gradle.kts" }
+        if (buildGradleKtsFile == null) {
+            printError("Couldn't find build.gradle.kts inside template folder.")
+            return
+        }
         var text = buildGradleKtsFile.readText()
 
         val plugins: MutableMap<String, String> = mutableMapOf()
@@ -71,7 +76,7 @@ class GradleProcessor : Processor<GradleWizardResult> {
                     repositoriesComment,
                     buildString {
                         repositores.forEach {
-                            append("maven { url = uri(\"${it}\")\n }")
+                            append("maven { url = uri(\"${it}\") }\n")
                         }
                     },
                 )

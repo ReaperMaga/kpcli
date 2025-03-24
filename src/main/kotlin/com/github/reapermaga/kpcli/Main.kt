@@ -36,18 +36,22 @@ fun main() {
         result
             .firstNotNullOfOrNull {
                 if (it.key == "template") (it.value as ListResult).selectedId else null
-            }?.let { templates.firstOrNull { templ -> templ.name == it } } ?: error("Template not found")
+            }?.let { templates.firstOrNull { templ -> templ.name == it } }
+    if (template == null) {
+        printError("Template not found")
+        return
+    }
     val projectName =
         result
             .firstNotNullOfOrNull {
                 if (it.key == "name") (it.value as InputResult).result else null
             }
     if (projectName == null || projectName == "null") {
-        println("Please provide a valid project name")
+        printError("Please provide a valid project name")
         return
     }
     if (projectName.isEmpty()) {
-        println("Project name cannot be empty")
+        printError("Project name cannot be empty")
         return
     }
     val wizardResult: WizardResult = template.wizard.prompt(prompt)
@@ -57,6 +61,6 @@ fun main() {
             it.unsafeProcess(template, folder, wizardResult)
         }
     }
-    emptySpace()
-    success("Project $projectName successfully initialized")
+    printSpace()
+    printSuccess("Project $projectName successfully initialized")
 }
