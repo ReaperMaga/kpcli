@@ -9,22 +9,28 @@ import java.io.File
 
 val templates =
     arrayOf(
-        Template("Base", "https://github.com/ReaperMaga/kotlin-gradle-base-template/archive/refs/tags/1.0.2.zip", BaseWizard()),
+        Template(
+            "Base",
+            "https://github.com/ReaperMaga/kotlin-gradle-base-template/archive/refs/tags/1.0.2.zip",
+            BaseWizard(),
+        ),
     )
 
 fun downloadTemplate(
     template: Template,
+    pathToDownload: String,
     projectName: String,
 ): File {
-    val downloadedZipFile = File("project.zip")
-    return download(template.url, downloadedZipFile.name).run {
-        val projectFolder = File(".")
-        val zipFile = ZipFile(name)
-        val fileName = zipFile.fileHeaders.firstOrNull { it.isDirectory }?.fileName ?: error("Couldn't find a directory")
+    val downloadedZipFile = File("${pathToDownload}project.zip")
+    return download(template.url, downloadedZipFile.absolutePath).run {
+        val projectFolder = File(pathToDownload)
+        val zipFile = ZipFile(absolutePath)
+        val fileName =
+            zipFile.fileHeaders.firstOrNull { it.isDirectory }?.fileName ?: error("Couldn't find a directory")
         zipFile.extractAll(projectFolder.path)
-        val downloadedFile = File(fileName)
+        val downloadedFile = File("$pathToDownload$fileName")
         val destinationFile =
-            File(projectName).apply {
+            File("$pathToDownload$projectName").apply {
                 mkdir()
             }
         downloadedFile.copyRecursively(destinationFile, true)

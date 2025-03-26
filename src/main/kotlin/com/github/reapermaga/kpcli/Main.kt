@@ -13,7 +13,11 @@ import org.jline.terminal.TerminalBuilder
 val terminal: Terminal = TerminalBuilder.builder().build()
 val reader: LineReader = LineReaderBuilder.builder().terminal(terminal).build()
 
-fun main() {
+fun main(vararg args: String) {
+    if (args.isEmpty()) {
+        printError("Please provide a path")
+        return
+    }
     val prompt = ConsolePrompt(reader, terminal, produceJLineUIConfig(terminal))
     val builder = prompt.promptBuilder
     // Template
@@ -33,6 +37,7 @@ fun main() {
         .message("What will your project be called?:")
         .addPrompt()
     val result = prompt.prompt(mutableListOf(getHeader(Template::class.java.classLoader)), builder.build())
+
     val template =
         result
             .firstNotNullOfOrNull {
@@ -56,7 +61,7 @@ fun main() {
         return
     }
     val wizardResult: WizardResult = template.wizard.prompt(prompt)
-    val folder = downloadTemplate(template, projectName)
+    val folder = downloadTemplate(template, args[0], projectName)
     processors.forEach {
         if (it.wizardResultType == wizardResult::class || it.wizardResultType.java.isAssignableFrom(wizardResult::class.java)) {
             it.unsafeProcess(template, folder, wizardResult)

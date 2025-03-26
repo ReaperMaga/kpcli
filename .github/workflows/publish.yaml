@@ -26,9 +26,10 @@ jobs:
         run: ./gradlew shadowJar
       - name: Create kpcli.bat
         run: |
-          echo @echo off > build/libs/kpcli.bat
-          echo cd /d "%~dp0" >> build/libs/kpcli.bat
-          echo java -jar kpcli-all.jar >> build/libs/kpcli.bat
+          @echo off
+          set currentDir=%cd%
+          cd /d %~dp0
+          java -jar kpcli-all.jar %currentDir%\
       - name: Create release
         if: ${{ success() }}
         uses: softprops/action-gh-release@v2
